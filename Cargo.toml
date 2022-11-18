@@ -1,0 +1,58 @@
+[package]
+name = "banana-dev"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type=["rlib", "cdylib"]
+
+[features]
+default = ["uuid"]
+
+uuid = ["dep:uuid"]
+
+sync = ["sync_ureq_rustls"]
+_sync = []
+sync_ureq = ["ureq", "ureq?/webpki", "ureq?/webpki-roots", "_sync"]
+_sync_rustls = []
+sync_ureq_rustls = ["sync_ureq", "ureq?/tls", "_sync_rustls"]
+_sync_native-tls = []
+sync_ureq_native-tls = ["sync_ureq", "ureq?/native-tls", "native-tls", "_sync_native-tls"]
+
+async = ["async_tokio_rustls"]
+_async = []
+async_tokio = ["hyper", "_async"]
+async_tokio_rustls = ["async_tokio", "tokio-rustls"]
+async_tokio_native-tls = ["async_tokio", "hyper-tls"]
+
+[dependencies]
+# Async client
+hyper = { version = "0.14", features = ["client"], optional = true }
+## Native-TLS
+hyper-tls = { version = "0.5", optional = true }
+## RustTLS
+tokio-rustls = { version = "0.23", optional = true }
+
+# Sync client
+ureq = { version = "2.5", features = ["gzip"], optional = true, default-features = false }
+native-tls = { version = "0.2", optional = true }
+
+
+# JSON Serialization / Deserialization
+serde = { version = "1.0", features = ["derive", "rc"] }
+serde_json = "1.0"
+
+# Logging
+tracing = "0.1"
+
+# UUID Generation in requests
+uuid = { version = "1.2", features = ["v4"], optional = true }
+
+# Helper to build structs
+typed-builder = "0.11"
+
+# Custom errors
+thiserror = "1.0"
+
+[dev-dependencies]
+tracing-test = "0.2"
